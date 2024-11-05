@@ -1,0 +1,23 @@
+name: Build and Push Image to JFrog Artifactory
+
+on:
+  push:
+    branches:
+      - 'main'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build:
+    name:  Build, Scan and Release NUI Image
+    uses: truefoundry/workflows/.github/workflows/build.yml@v0.1.0
+    with:
+      image_tag: ${{ github.sha }}
+      image_artifact_name: ${{ github.event.repository.name }}
+      artifactory_registry_url: ${{ vars.TRUEFOUNDRY_ARTIFACTORY_REGISTRY_URL }}
+      artifactory_repository_url: ${{ vars.TRUEFOUNDRY_ARTIFACTORY_PUBLIC_REPOSITORY }}
+    secrets:
+      artifactory_username: ${{ secrets.TRUEFOUNDRY_ARTIFACTORY_PUBLIC_USERNAME }}
+      artifactory_password: ${{ secrets.TRUEFOUNDRY_ARTIFACTORY_PUBLIC_PASSWORD }}
